@@ -1,13 +1,14 @@
 import React from "react";
 import Constants from "expo-constants";
 import { SafeAreaView, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar"
+import colors from "./colors";
 
 export default function StatusBarScreen({ children, style }) {
   return (
-    <SafeAreaView
-      style={[styles.screen, style, { flex: 1, backgroundColor: "yellogreen" }]}
-    >
+    <SafeAreaView style={styles.screen}>
       {children}
+      <StatusBar backgroundColor="#6D4C41" style="light" />
     </SafeAreaView>
   );
 }

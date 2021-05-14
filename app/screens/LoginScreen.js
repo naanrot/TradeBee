@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as Font from 'expo-font';
 import {
+  Image,
   View,
   StyleSheet,
   Text,
@@ -10,15 +11,17 @@ import {
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
 import AppButton from "../components/AppButton";
-import { ErrorMessage, Form, Formik } from "formik";
+import { Formik } from "formik";
+import ErrorMessage from '../components/ErrorMessage';
 import * as Yup from "yup";
+import StatusBarScreen from "../components/StatusBarScreen";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().label("* Email"),
   password: Yup.string().required().min(4).label("* Password")
 })
 
-class LaunchScreen extends React.Component {
+class LoginScreen extends React.Component {
   state = {
     fontsLoaded: false,
   };
@@ -38,66 +41,71 @@ class LaunchScreen extends React.Component {
     // Use the font with the fontFamily property after loading
     if (this.state.fontsLoaded) {
       return (
-        <ImageBackground 
-          style={mainStyleSheet.imageBackground}
-          resizeMode="stretch"
-          source={require("../assets/backGround.png")}
-        >
-          <Text style={mainStyleSheet.appNameTextView}>
-            TradeBee
-          </Text>
-
-          <Card style={mainStyleSheet.loginCard}>
-            <View style={mainStyleSheet.loginLabelContainer}>
-              <AppText
-                style={mainStyleSheet.loginLabel}
-              >
-                Login
-              </AppText>
+        <StatusBarScreen>
+          <ImageBackground 
+            style={mainStyleSheet.imageBackground}
+            resizeMode="stretch"
+            source={require("../assets/backGround.png")}
+          >
+            <View style={mainStyleSheet.appLogoContainer}>
+              <Image style={mainStyleSheet.appLogoStyle} source={require("../assets/appLogo.png")} />
+              <Text style={mainStyleSheet.appNameTextView}>
+                TradeBee
+              </Text>
             </View>
 
-            <Formik
-              initialValues={{
-                email: "",
-                password: ""
-              }}
-              onSubmit={(values) => console.log(values)}
-              validationSchema={validationSchema}
-            >{({
-              handleChange,
-              handleSubmit,
-              errors,
-              setFieldTouched,
-              touched,
-            }) => (
-              <>
-                <AppTextInput
-                  placeholder="Email"
-                  width="100%"
-                />
-                {touched.email && (
-                  <ErrorMessage error={errors.email} />
-                )}
-                <AppTextInput
-                  placeholder="Password"
-                  width="100%"
-                />
-                {touched.password && (
-                  <ErrorMessage error={errors.password} />
-                )}
-                <AppButton
-                  style={mainStyleSheet.loginButton}
-                  title="LOGIN"
-                  onPress={handleSubmit}
-                />
-              </>
-            )}
-            </Formik>
+            <Card style={mainStyleSheet.loginCard}>
+              <View style={mainStyleSheet.loginLabelContainer}>
+                <AppText
+                  style={mainStyleSheet.loginLabel}
+                >
+                  Login
+                </AppText>
+              </View>
 
-          </Card>
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: ""
+                }}
+                onSubmit={(values) => console.log(values)}
+                validationSchema={validationSchema}
+              >{({
+                handleChange,
+                handleSubmit,
+                errors,
+                setFieldTouched,
+                touched,
+              }) => (
+                <>
+                  <AppTextInput
+                    iconName="email"
+                    placeholder="Email"
+                    width="100%"
+                    onChangeText={handleChange("email")}
+                  />
+                  {touched.email && <ErrorMessage error={errors.email} />}
+                  <AppTextInput
+                    iconName="lock"
+                    placeholder="Password"
+                    width="100%"
+                    onChangeText={handleChange("password")}
+                  />
+                  {touched.password && <ErrorMessage error={errors.password} />}
+                  <AppButton
+                    style={mainStyleSheet.loginButton}
+                    title="LOGIN"
+                    onPress={handleSubmit}
+                  />
+                </>
+              )}
+              </Formik>
 
-          <StatusBar style="auto" />
-        </ImageBackground>
+            </Card>
+
+            <StatusBar style="auto" />
+          </ImageBackground>
+        </StatusBarScreen>
       );
     } else {
       return null;
@@ -127,6 +135,16 @@ const cardStyle = StyleSheet.create({
 
 
 const mainStyleSheet = StyleSheet.create({
+  appLogoContainer: {
+    top: 50,
+    alignItems:"center",
+  },
+
+  appLogoStyle: {
+    width: 80,
+    height: 80
+  },
+
   loginLabelContainer:{
     width: "100%",
     margin: 10
@@ -144,10 +162,6 @@ const mainStyleSheet = StyleSheet.create({
     fontSize: 30,
   },
 
-  loginButton: {
-    
-  },
-
   imageBackground: {
     flex: 1,
     alignItems: 'center'
@@ -156,8 +170,7 @@ const mainStyleSheet = StyleSheet.create({
   appNameTextView: {
     fontFamily: 'Aladin',
     fontSize: 60,
-    top: 90
   }
 })
 
-export default LaunchScreen
+export default LoginScreen
