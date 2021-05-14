@@ -4,6 +4,6 @@ import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 
 export default function App() {
-  //This comment from ajmal
+  //This comment from Dipak
   return <LoginScreen />;
 }
