@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   text: {
+    width: "100%",
     color: "black",
   },
 });
