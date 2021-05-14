@@ -35,6 +35,7 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.loadFonts();
+    //This is demo code
   }
 
   render() {
