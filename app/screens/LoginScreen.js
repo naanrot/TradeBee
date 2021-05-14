@@ -7,6 +7,7 @@ import {
   Text,
   ImageBackground,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
@@ -57,9 +58,7 @@ class LoginScreen extends React.Component {
             </View>
 
             <Card style={mainStyleSheet.loginCard}>
-              <View style={mainStyleSheet.loginLabelContainer}>
-                <AppText style={mainStyleSheet.loginLabel}>Login</AppText>
-              </View>
+              <AppText style={mainStyleSheet.loginLabel}>Login</AppText>
 
               <Formik
                 initialValues={{
@@ -101,6 +100,14 @@ class LoginScreen extends React.Component {
                   </>
                 )}
               </Formik>
+              <Text style={{fontSize: 20, color:"white"}}>OR</Text>
+              <TouchableOpacity style={mainStyleSheet.googleSignUpContainer}>
+                <Text>Sign Up using google</Text>
+              </TouchableOpacity>
+
+              <Text
+                style={mainStyleSheet.memberSignUpTextView}
+              >Not a member? Sign Up</Text>
             </Card>
 
             <StatusBar style="auto" />
@@ -134,7 +141,7 @@ const cardStyle = StyleSheet.create({
 
 const mainStyleSheet = StyleSheet.create({
   appLogoContainer: {
-    top: 50,
+    marginBottom:13,
     alignItems: "center",
   },
 
@@ -143,26 +150,37 @@ const mainStyleSheet = StyleSheet.create({
     height: 80,
   },
 
-  loginLabelContainer: {
-    width: "100%",
-    margin: 10,
-  },
-
   loginCard: {
-    position: "absolute",
-    bottom: 30,
-    padding: 15,
+    padding:10,
+    marginBottom:20,
     alignItems: "center",
   },
 
   loginLabel: {
     textShadowColor: "black",
     fontSize: 30,
+    width:"100%",
+    alignSelf:"flex-start"
   },
 
   imageBackground: {
     flex: 1,
     alignItems: "center",
+    justifyContent:"flex-end"
+  },
+
+  memberSignUpTextView: {
+    color: "white",
+    textDecorationLine:"underline",
+    alignSelf:"flex-end"
+  },
+
+  googleSignUpContainer: {
+    borderRadius: 5,
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    margin:5,
   },
 
   appNameTextView: {
