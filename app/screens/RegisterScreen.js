@@ -20,9 +20,7 @@ function RegisterScreen(props) {
         resizeMode="stretch"
       >
         <View style={styles.container}>
-          <AppText style={styles.tagline}>
-            Be a Crypto trader today with tradeBee and start trading
-          </AppText>
+          <AppText style={styles.tagline}>Be a Crypto trader Today</AppText>
           <Card />
         </View>
       </ImageBackground>
