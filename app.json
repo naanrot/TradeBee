@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "jupiterstudios",
     "name": "TradeBee",
     "slug": "TradeBee",
     "version": "1.0.0",
@@ -17,13 +18,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.example.TradeBee",
+      "config": {
+        "googleSignIn" :{
+          "reservedClientId":"com.googleusercontent.apps.1098929057753-ettftd99uke1p2rb3e4l8jk8uiattfm0"
+        }
+      },
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.example.TradeBee",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
