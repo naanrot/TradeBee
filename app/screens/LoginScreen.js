@@ -19,6 +19,8 @@ import StatusBarScreen from "../components/StatusBarScreen";
 import { AntDesign } from "@expo/vector-icons"
 import * as firebase from 'firebase'
 import * as GoogleSignIn from 'expo-google-sign-in';
+import MyCard from '../components/MyCard'
+import colors from "../components/colors";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("* Email"),
@@ -40,7 +42,6 @@ class LoginScreen extends React.Component {
   componentDidMount() {
     this.loadFonts();
     this.initAsync();
-    //This is demo code
   }
 
   initAsync = async () => {
@@ -50,13 +51,15 @@ class LoginScreen extends React.Component {
 
   _syncUserWithStateAsync = async () => {
     const user = await GoogleSignIn.signInSilentlyAsync();
-    this.setState({ user });
+    this.setState({ user }, () => {
+      console.log(user)
+    });
   }
 
   signInAsync = async () => {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
-      const { type, user } = await GoogleSignIn.signInAsync();
+      const { type } = await GoogleSignIn.signInAsync();
       if (type === 'success') {
         this._syncUserWithStateAsync();
       }
@@ -78,12 +81,12 @@ class LoginScreen extends React.Component {
 
   render() {
 
-    const fs = firebase.default.firestore()
+    /*const fs = firebase.default.firestore()
     fs.collection("users").doc("OVNLtYzp3ZrhpI3dc661").set({
       name: "Ajmal husain eache"
     }).then(() => {
       console.log("Data added successfully")
-    })
+    })*/
 
     // Use the font with the fontFamily property after loading
     if (this.state.fontsLoaded) {
@@ -102,7 +105,7 @@ class LoginScreen extends React.Component {
               <Text style={mainStyleSheet.appNameTextView}>TradeBee</Text>
             </View>
 
-            <Card style={mainStyleSheet.loginCard}>
+            <MyCard style={mainStyleSheet.loginCard}>
               <AppText style={mainStyleSheet.loginLabel}>Login</AppText>
 
               <Formik
@@ -137,11 +140,13 @@ class LoginScreen extends React.Component {
                     {touched.password && (
                       <ErrorMessage error={errors.password} />
                     )}
-                    <AppButton
-                      style={mainStyleSheet.loginButton}
-                      title="LOGIN"
-                      onPress={handleSubmit}
-                    />
+                    <View>
+                      <AppButton
+                        style={mainStyleSheet.loginButton}
+                        title="LOGIN"
+                        onPress={handleSubmit}
+                      />
+                    </View>
                   </>
                 )}
               </Formik>
@@ -156,7 +161,7 @@ class LoginScreen extends React.Component {
               <Text
                 style={mainStyleSheet.memberSignUpTextView}
               >Not a member? Sign Up</Text>
-            </Card>
+            </MyCard>
 
             <StatusBar style="auto" />
           </ImageBackground>
@@ -168,24 +173,7 @@ class LoginScreen extends React.Component {
   }
 }
 
-class Card extends Component {
-  render() {
-    return (
-      <View style={[cardStyle.card, { ...this.props.style }]}>
-        {this.props.children}
-      </View>
-    );
-  }
-}
 
-const cardStyle = StyleSheet.create({
-  card: {
-    width: "90%",
-    backgroundColor: "#6D4C41",
-    borderRadius: 8,
-    elevation: 5,
-  },
-});
 
 const mainStyleSheet = StyleSheet.create({
   appLogoContainer: {
@@ -202,6 +190,7 @@ const mainStyleSheet = StyleSheet.create({
     padding:10,
     marginBottom:20,
     alignItems: "center",
+    backgroundColor: colors.secondary
   },
 
   loginLabel: {

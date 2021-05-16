@@ -1,8 +1,8 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from 'firebase/app'
+import MarketScreen from "./app/screens/MarketScreen";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
@@ -18,5 +18,5 @@ const firebaseConfig = {
 //in 'Usage with Firebase'
 export default function App() {
   firebase.initializeApp(firebaseConfig);
-  return <LoginScreen />;
+  return <MarketScreen />;
 }
