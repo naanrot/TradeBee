@@ -38,7 +38,10 @@
     "react-native-web": "~0.13.12",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "rn-credit-card": "^1.0.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+
+    "firebase": "8.2.3",
+    "expo-google-sign-in": "~9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
