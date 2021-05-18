@@ -1,16 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { 
-    View, 
-    StyleSheet,
-    UIManager,
-    Platform,
-    FlatList
- } from 'react-native';
-import fetchCoins from '../api/fetchCoins';
-import MarketCard from '../components/MarketCard';
-import StatusBarScreen from '../components/StatusBarScreen';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  UIManager,
+  Platform,
+  FlatList,
+  TouchableOpacity,
+  LayoutAnimation,
+} from "react-native";
+import CoinRepo from "../utility/coinRepo";
+import coinFetchService from "../api/fetchCoins";
+import ActiveButton from "../components/ActiveButton";
+import MarketCard from "../components/MarketCard";
+import StatusBarScreen from "../components/StatusBarScreen";
+import { AntDesign } from "@expo/vector-icons";
+import { SearchBar } from "react-native-elements";
+import { Picker } from "@react-native-picker/picker";
+import ActivityIndicator from "../components/ActivityIndicator";
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
@@ -20,54 +31,218 @@ const marketCardColors = [
   "#F7931A",
   "#FF0000",
   "#F1CB60",
-  "#2CD3E1"
-]
+  "#2CD3E1",
+];
+
+const repo = new CoinRepo();
 
 function MarketScreen() {
+  const [search, setSearch] = useState("");
   const [coins, setCoins] = useState([]);
-  const [exchangerate, setExchangeRate] = useState("USD");
-  var mCC = -1
+  const [filteredCoins, setFilteredCoins] = useState(coins);
+  const [exchangerate, setExchangeRate] = useState("INR");
+  const [currentBtn, toggleActiveBtn] = useState(true);
+  const [showSearchBar, toggleSearchBar] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect( () => {
-    loadCoins();
-  }, [])
+  useEffect(() => {
+    loadData(currentBtn);
+    return () => {
+      coinFetchService.cancelFetchCoins();
+    };
+  }, []);
 
-  const loadCoins = async () => {
-    let response = await fetchCoins.fetchCoins(exchangerate);
-    console.log(marketCardColors[0])
-    setCoins(response.data.rates);
-  }
+  const loadData = async (tempCurrentBtn, currency) => {
+    currency = typeof currency === "undefined" ? exchangerate : currency;
+    const type = tempCurrentBtn ? "all" : "top";
+
+    setLoading(true);
+    let data = repo.get(type, currency);
+    const endPoint = tempCurrentBtn ? "rates" : "data";
+
+    if (typeof data === "undefined") {
+      let response = tempCurrentBtn
+        ? await loadCoins(currency)
+        : await loadTop(currency);
+      repo.store(type, currency, response.data);
+
+      setLoading(false);
+      setCoins(response["data"][endPoint]);
+      setFilteredCoins(response["data"][endPoint]);
+    } else {
+      setLoading(false);
+
+      setCoins(data[endPoint]);
+      setFilteredCoins(data[endPoint]);
+    }
+  };
+
+  const loadCoins = (currency) => coinFetchService.fetchCoins(currency);
+
+  const loadTop = (currency) => coinFetchService.latestHistory(currency);
+
+  const rateChanged = (currency) => {
+    setExchangeRate(currency);
+    setFilteredCoins([]);
+    setCoins([]);
+    loadData(currentBtn, currency);
+  };
+
+  const toggleRequest = (value) => {
+    if (currentBtn != value) {
+      toggleActiveBtn(value);
+      coinFetchService.cancelFetchCoins();
+      setCoins([]);
+      setFilteredCoins([]);
+      loadData(value);
+    }
+  };
+
+  const searchFilterFunction = (text) => {
+    if (text) {
+      const newData = coins.filter((item) => {
+        let coinName = currentBtn ? item.asset_id_quote : item.name;
+        coinName = coinName ? coinName.toUpperCase() : "".toUpperCase();
+        return coinName.indexOf(text.toUpperCase()) > -1;
+      });
+      setFilteredCoins(newData);
+      setSearch(text);
+    } else {
+      setFilteredCoins(coins);
+      setSearch(text);
+    }
+  };
 
   return (
     <StatusBarScreen>
-      <View style={style.container}>
-        <FlatList 
-          data={coins}
-          keyExtractor={coin => coin.asset_id_quote}
-          renderItem={({ item }) =>
-            <MarketCard 
-              coinName={item.asset_id_quote}
-              secretMessage={item.rate}
-              style={{
-                backgroundColor: item.color
-              }}
+      <View style={styles.container}>
+        <View>
+          <View style={styles.horFilterBtnContainer}>
+            <View style={{ width: "100%", flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  toggleRequest(true);
+                }}
+              >
+                <ActiveButton isActive={currentBtn} title="All" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  toggleRequest(false);
+                }}
+              >
+                <ActiveButton isActive={!currentBtn} title="Top 100" />
+              </TouchableOpacity>
+
+              <View style={{ flexGrow: 1 }} />
+
+              <Picker
+                mode="dropdown"
+                selectedValue={exchangerate}
+                style={styles.pickerStyle}
+                onValueChange={(itemValue, itemIndex) => {
+                  rateChanged(itemValue);
+                  //console.log(itemValue);
+                }}
+              >
+                <Picker.Item label="USD" value="USD" />
+                <Picker.Item label="INR" value="INR" />
+              </Picker>
+
+              <AntDesign
+                name="search1"
+                size={20}
+                style={styles.serachIcon}
+                onPress={() => {
+                  LayoutAnimation.configureNext(
+                    LayoutAnimation.create(
+                      100,
+                      LayoutAnimation.Types.linear,
+                      LayoutAnimation.Properties.opacity
+                    )
+                  );
+                  toggleSearchBar(!showSearchBar);
+                }}
+              />
+            </View>
+          </View>
+          {showSearchBar && (
+            <SearchBar
+              lightTheme={true}
+              onChangeText={(text) => searchFilterFunction(text)}
+              onClear={(text) => searchFilterFunction("")}
+              placeholder="Coint name..."
+              value={search}
             />
-          }
-        />
+          )}
+        </View>
+        {!loading && (
+          <>
+            {currentBtn && (
+              <FlatList
+                data={filteredCoins}
+                keyExtractor={(coin) => coin.asset_id_quote}
+                renderItem={({ item }) => (
+                  <MarketCard
+                    coinName={item.asset_id_quote}
+                    secretMessage={item.rate}
+                    currency={item.asset_id_quote}
+                    style={{
+                      alignSelf: "center",
+                    }}
+                  />
+                )}
+              />
+            )}
+            {!currentBtn && (
+              <FlatList
+                data={filteredCoins}
+                keyExtractor={(coin) => coin.id.toString()}
+                renderItem={({ item }) => (
+                  <MarketCard
+                    coinName={item.name}
+                    secretMessage={item["quote"][exchangerate]["price"]}
+                    cryptoSymbol={item.symbol}
+                    style={{
+                      alignSelf: "center",
+                    }}
+                  />
+                )}
+              />
+            )}
+          </>
+        )}
+        {loading && <ActivityIndicator />}
       </View>
     </StatusBarScreen>
-  )
+  );
 }
 
-const style = StyleSheet.create({
-    tile: {
-      backgroundColor:'blue',
-      borderWidth: 0.5,
-      borderColor: '#d6d7da',
-    },
-    container: {
-      flex: 1
-    },
+const styles = StyleSheet.create({
+  tile: {
+    backgroundColor: "blue",
+    borderWidth: 0.5,
+    borderColor: "#d6d7da",
+  },
+
+  horFilterBtnContainer: {
+    flexDirection: "row",
+    backgroundColor: "#b0bec5",
+  },
+
+  pickerStyle: {
+    alignSelf: "center",
+    width: "23%",
+  },
+
+  serachIcon: {
+    alignSelf: "center",
+    marginEnd: 15,
+  },
+
+  container: {
+    flex: 1,
+  },
 });
 
 export default MarketScreen;

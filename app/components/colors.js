@@ -6,4 +6,5 @@ export default {
   medium: "#6e6969",
   light: "#e9e9e9",
   rightSwipe: "#ff726f",
+  disabled: "#cfd8dc",
 };
