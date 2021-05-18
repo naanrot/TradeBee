@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import defaultStyle from "../config/style.js";
 
 function AppText({ children, style }) {
@@ -7,3 +7,4 @@ function AppText({ children, style }) {
 }
 
 export default AppText;
+const styles = StyleSheet.create({});
