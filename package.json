@@ -17,7 +17,9 @@
     "axios": "^0.21.1",
     "browser-sync": "^2.26.14",
     "expo": "^41.0.1",
+    "expo-google-sign-in": "^9.1.0",
     "expo-status-bar": "^1.0.4",
+    "firebase": "8.2.3",
     "formik": "^2.2.6",
     "react": "16.13.1",
     "react-credit-cards": "^0.8.3",
@@ -36,15 +38,19 @@
     "react-native-screens": "~3.0.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
+    "react-redux": "^7.2.4",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "redux": "^4.1.0",
+    "redux-promise": "^0.6.0",
+    "redux-thunk": "^2.3.0",
     "rn-credit-card": "^1.0.0",
-    "yup": "^0.32.9",
-
-    "firebase": "8.2.3",
-    "expo-google-sign-in": "~9.1.0"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0"
+    "@babel/core": "^7.9.0",
+    "redux-logger": "^3.0.6",
+    "remote-redux-devtools": "^0.5.16",
+    "remotedev-rn-debugger": "^0.8.4"
   },
   "private": true
 }

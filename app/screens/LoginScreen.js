@@ -16,9 +16,9 @@ import { Formik } from "formik";
 import ErrorMessage from "../components/ErrorMessage";
 import * as Yup from "yup";
 import StatusBarScreen from "../components/StatusBarScreen";
-import { AntDesign } from "@expo/vector-icons"
-import * as firebase from 'firebase'
-import * as GoogleSignIn from 'expo-google-sign-in';
+import { AntDesign } from "@expo/vector-icons";
+import * as firebase from "firebase";
+import * as GoogleSignIn from "expo-google-sign-in";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("* Email"),
@@ -46,44 +46,47 @@ class LoginScreen extends React.Component {
   initAsync = async () => {
     await GoogleSignIn.initAsync();
     this._syncUserWithStateAsync();
-  }
+  };
 
   _syncUserWithStateAsync = async () => {
     const user = await GoogleSignIn.signInSilentlyAsync();
     this.setState({ user });
-  }
+  };
 
   signInAsync = async () => {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
       const { type, user } = await GoogleSignIn.signInAsync();
-      if (type === 'success') {
+      if (type === "success") {
         this._syncUserWithStateAsync();
       }
     } catch ({ message }) {
-      alert('login: Error:' + message);
+      alert("login: Error:" + message);
     }
-  }
+  };
 
   _signInUserWithCred = (data) => {
-    firebase.default.auth().signInWithEmailAndPassword(
-      data.email,
-      data.password
-    ).then((userCred) => {
-      console.log("Successfully signed in")
-    }).catch((error) => {
-      alert(error.message)
-    })
-  }
+    firebase.default
+      .auth()
+      .signInWithEmailAndPassword(data.email, data.password)
+      .then((userCred) => {
+        console.log("Successfully signed in");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
 
   render() {
-
-    const fs = firebase.default.firestore()
-    fs.collection("users").doc("OVNLtYzp3ZrhpI3dc661").set({
-      name: "Ajmal husain eache"
-    }).then(() => {
-      console.log("Data added successfully")
-    })
+    const fs = firebase.default.firestore();
+    fs.collection("users")
+      .doc("OVNLtYzp3ZrhpI3dc661")
+      .set({
+        name: "Ajmal husain eache",
+      })
+      .then(() => {
+        console.log("Data added successfully");
+      });
 
     // Use the font with the fontFamily property after loading
     if (this.state.fontsLoaded) {
@@ -146,16 +149,23 @@ class LoginScreen extends React.Component {
                 )}
               </Formik>
 
-              <Text style={{fontSize: 20, color:"white"}}>OR</Text>
+              <Text style={{ fontSize: 20, color: "white" }}>OR</Text>
 
-              <TouchableOpacity style={mainStyleSheet.googleSignUpContainer} onPress={this.signInAsync}>
-                <AntDesign style={{margin: 5}} name="google" size={25} />
+              <TouchableOpacity
+                style={mainStyleSheet.googleSignUpContainer}
+                onPress={this.signInAsync}
+              >
+                <AntDesign style={{ margin: 5 }} name="google" size={25} />
                 <Text>Sign Up using Google</Text>
               </TouchableOpacity>
 
-              <Text
-                style={mainStyleSheet.memberSignUpTextView}
-              >Not a member? Sign Up</Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Register")}
+              >
+                <Text style={mainStyleSheet.memberSignUpTextView}>
+                  Not a member? Sign Up
+                </Text>
+              </TouchableOpacity>
             </Card>
 
             <StatusBar style="auto" />
@@ -189,7 +199,7 @@ const cardStyle = StyleSheet.create({
 
 const mainStyleSheet = StyleSheet.create({
   appLogoContainer: {
-    marginBottom:13,
+    marginBottom: 13,
     alignItems: "center",
   },
 
@@ -199,28 +209,28 @@ const mainStyleSheet = StyleSheet.create({
   },
 
   loginCard: {
-    padding:10,
-    marginBottom:20,
+    padding: 10,
+    marginBottom: 20,
     alignItems: "center",
   },
 
   loginLabel: {
     textShadowColor: "black",
     fontSize: 30,
-    width:"100%",
-    alignSelf:"flex-start"
+    width: "100%",
+    alignSelf: "flex-start",
   },
 
   imageBackground: {
     flex: 1,
     alignItems: "center",
-    justifyContent:"flex-end"
+    justifyContent: "flex-end",
   },
 
   memberSignUpTextView: {
     color: "white",
-    textDecorationLine:"underline",
-    alignSelf:"flex-end"
+    textDecorationLine: "underline",
+    alignSelf: "flex-end",
   },
 
   googleSignUpContainer: {
@@ -228,9 +238,9 @@ const mainStyleSheet = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 10,
-    margin:5,
-    flexDirection:"row",
-    alignItems:"center"
+    margin: 5,
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   appNameTextView: {

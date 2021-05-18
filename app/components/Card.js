@@ -4,13 +4,15 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   CheckBox,
+  Alert,
 } from "react-native";
+import AppText from "./AppText";
 import { Formik } from "formik";
 import AppButton from "./AppButton";
-import AppText from "./AppText";
 import * as Yup from "yup";
 import AppTextInput from "./AppTextInput";
 import ErrorMessage from "./ErrorMessage";
+import * as firebase from "firebase";
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required().label("* Username"),
@@ -18,8 +20,28 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required().min(4).label("* Passowrd"),
   confirmPassword: Yup.string().required().min(4).label("* ConfirmPassowrd"),
 });
-function Card() {
+
+function Card({ navigation }) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
+  // const fs = firebase.default.firestore();
+  const register = (value) => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(value.email, value.password)
+
+      .then((res) => {
+        Alert.alert("Good to go", "Registration is successfull", [
+          {
+            text: "Goto Login",
+            onPress: () => navigation.navigate("Login"),
+          },
+        ]);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
 
   return (
     <TouchableWithoutFeedback style={styles.container}>
@@ -33,7 +55,27 @@ function Card() {
               password: "",
               confirmPassword: "",
             }}
-            onSubmit={(values) => console.log(values)}
+            // this is the function that get called when the form is submitted
+            //here we pass the function this function takes an object that represents the value in the form
+
+            // onSubmit={(value) => {
+            //   Alert.alert("Good to go", "Registration is successfull", [
+            //     {
+            //       text: "Goto Login",
+            //       onPress: () => console.log(value.email),
+            //     },
+            //   ]);
+
+            //   register;
+            // }}
+            onSubmit={(value) => {
+              if (value.password !== value.confirmPassword) {
+                alert("Password did not match, Try once Again");
+              } else {
+                console.log(value.password);
+                register(value);
+              }
+            }}
             validationSchema={validationSchema}
           >
             {({
@@ -94,6 +136,7 @@ function Card() {
                   </AppText>
                 </View>
                 <AppButton title="Sign up" onPress={handleSubmit} />
+                {/* this will cause the form to be submitted */}
               </>
             )}
           </Formik>

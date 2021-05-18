@@ -12,11 +12,12 @@ import { NavigationContainer } from "@react-navigation/native";
 //       </NavigationContainer>
 //     </StatusBarScreen>
 //   );
-
+import React from "react";
 import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
-
+import Card from "./app/components/Card";
+import UserAuth from "./app/Navigation/UserAuth";
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
   authDomain: "tradebee-46f89.firebaseapp.com",
@@ -33,8 +34,10 @@ export default function App() {
   firebase.initializeApp(firebaseConfig);
   return (
     <NavigationContainer>
-      <Login />
-      <MainNavigation />
+      {/* <LoginScreen /> */}
+      {/* <MainNavigation /> */}
+      <UserAuth />
     </NavigationContainer>
+    // <RegisterScreen />
   );
 }
