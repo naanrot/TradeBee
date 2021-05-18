@@ -81,10 +81,14 @@ function MarketScreen() {
 
   const loadTop = (currency) => coinFetchService.latestHistory(currency);
 
-  const rateChanged = (currency) => {
-    setExchangeRate(currency);
+  const resetCoins = () => {
     setFilteredCoins([]);
     setCoins([]);
+  };
+
+  const rateChanged = (currency) => {
+    setExchangeRate(currency);
+    resetCoins();
     loadData(currentBtn, currency);
   };
 
@@ -92,8 +96,7 @@ function MarketScreen() {
     if (currentBtn != value) {
       toggleActiveBtn(value);
       coinFetchService.cancelFetchCoins();
-      setCoins([]);
-      setFilteredCoins([]);
+      resetCoins();
       loadData(value);
     }
   };
