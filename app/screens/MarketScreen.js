@@ -17,6 +17,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { SearchBar } from "react-native-elements";
 import { Picker } from "@react-native-picker/picker";
 import ActivityIndicator from "../components/ActivityIndicator";
+import loadMetadata from "../api/loadSymbol";
+import colors from "../components/colors";
+import Globals from "../utility/globals";
 
 if (
   Platform.OS === "android" &&
@@ -25,25 +28,18 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const marketCardColors = [
-  "#F5EB16",
-  "#767DFF",
-  "#F7931A",
-  "#FF0000",
-  "#F1CB60",
-  "#2CD3E1",
-];
-
-const repo = new CoinRepo();
+//const repo = new CoinRepo();
 
 function MarketScreen() {
   const [search, setSearch] = useState("");
   const [coins, setCoins] = useState([]);
   const [filteredCoins, setFilteredCoins] = useState(coins);
   const [exchangerate, setExchangeRate] = useState("INR");
-  const [currentBtn, toggleActiveBtn] = useState(true);
+  const [currentBtn, toggleActiveBtn] = useState(false);
   const [showSearchBar, toggleSearchBar] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const repo = Globals.coinRepo;
 
   useEffect(() => {
     loadData(currentBtn);
@@ -124,17 +120,18 @@ function MarketScreen() {
             <View style={{ width: "100%", flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() => {
-                  toggleRequest(true);
-                }}
-              >
-                <ActiveButton isActive={currentBtn} title="All" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
                   toggleRequest(false);
                 }}
               >
                 <ActiveButton isActive={!currentBtn} title="Top 100" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  toggleRequest(true);
+                }}
+              >
+                <ActiveButton isActive={currentBtn} title="All" />
               </TouchableOpacity>
 
               <View style={{ flexGrow: 1 }} />
@@ -205,7 +202,7 @@ function MarketScreen() {
                   <MarketCard
                     coinName={item.name}
                     secretMessage={item["quote"][exchangerate]["price"]}
-                    cryptoSymbol={item.symbol}
+                    currency={item.symbol}
                     style={{
                       alignSelf: "center",
                     }}
@@ -230,7 +227,7 @@ const styles = StyleSheet.create({
 
   horFilterBtnContainer: {
     flexDirection: "row",
-    backgroundColor: "#b0bec5",
+    backgroundColor: colors.primary,
   },
 
   pickerStyle: {

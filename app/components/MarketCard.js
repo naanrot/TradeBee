@@ -6,10 +6,14 @@ import {
   TouchableOpacity,
   UIManager,
   Platform,
+  Button,
   StyleSheet,
+  View,
 } from "react-native";
+import App from "../../App";
+import AppButton from "./AppButton";
+import colors from "./colors";
 import MyCard from "./MyCard";
-import loadMetadata from "../api/loadSymbol";
 
 if (
   Platform.OS === "android" &&
@@ -18,24 +22,16 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+const cryptoIcon = "https://cryptoicons.org/api/color/";
+const iconWidth = "/64";
+
 const MarketCard = (props) => {
-  const [showSecret, toggleGraph] = useState(false);
-  const [metadataLoaded, setImageUrl] = useState(true);
-  //let imageUrl = require("../assets/appLogo.png");
+  const [showDetail, toggleGraph] = useState(false);
+  const imageUrl = cryptoIcon + props.currency.toLowerCase() + iconWidth;
 
-  // useEffect(() => {
-  //   loadImage();
-  // }, []);
-
-  // const loadImage = async () => {
-  //   let response = await loadMetadata(props.cryptoSymbol);
-  //   //console.log(response);
-  //   if (typeof response !== "undefined") {
-  //     //imageUrl = response["data"]["data"][props.cryptoSymbol]["logo"];
-  //     console.log(response);
-  //     //setImageUrl(true);
-  //   }
-  // };
+  const fixed = props.secretMessage.toFixed(2).toString();
+  let tenPower = props.secretMessage.toString().indexOf(".");
+  tenPower = props.secretMessage.toString().length - tenPower;
 
   return (
     <MyCard style={props.style}>
@@ -48,32 +44,76 @@ const MarketCard = (props) => {
               LayoutAnimation.Properties.opacity
             )
           );
-          toggleGraph(!showSecret);
+          toggleGraph(!showDetail);
         }}
       >
-        {!metadataLoaded && (
+        <View style={cardStyle.coinContainer}>
           <Image
-            style={{ width: 100, height: 100 }}
-            source={require("../assets/appLogo.png")}
+            style={cardStyle.cointImage}
+            source={{ uri: imageUrl, cache: "only-if-cached" }}
           />
+          <Text style={cardStyle.coinName}>{props.coinName}</Text>
+
+          <View style={{ flexGrow: 1 }} />
+
+          <View style={cardStyle.priceContainer}>
+            <Text style={cardStyle.price}>{fixed + "x10"}</Text>
+            <Text style={cardStyle.tenPower}>{tenPower}</Text>
+          </View>
+        </View>
+        {showDetail && (
+          <>
+            <View style={cardStyle.showDetailContainer}>
+              <Text style={cardStyle.detailButton}>Trade</Text>
+              <Text style={cardStyle.detailButton}>Show Details</Text>
+            </View>
+          </>
         )}
-        {metadataLoaded && (
-          <Image
-            style={{ width: 100, height: 100 }}
-            //source={{ uri: imageUrl }}
-            source={require("../assets/appLogo.png")}
-          />
-        )}
-        <Text style={cardStyle.coinName}>{props.coinName}</Text>
-        {showSecret && <Text>{props.secretMessage}</Text>}
       </TouchableOpacity>
     </MyCard>
   );
 };
 
 const cardStyle = StyleSheet.create({
+  coinContainer: {
+    flexDirection: "row",
+  },
+
+  cointImage: {
+    width: 35,
+    height: 35,
+    margin: 10,
+  },
+
+  price: {
+    fontSize: 16,
+  },
+
+  tenPower: {
+    fontSize: 10,
+    lineHeight: 15,
+  },
+
+  priceContainer: {
+    margin: 10,
+    flexDirection: "row",
+    alignSelf: "center",
+  },
+
   coinName: {
-    fontWeight: "400",
+    fontWeight: "300",
+    alignSelf: "center",
+    fontSize: 22,
+  },
+
+  detailButton: {
+    marginHorizontal: 8,
+    fontSize: 18,
+    color: colors.secondary,
+  },
+
+  showDetailContainer: {
+    flexDirection: "row-reverse",
   },
 });
 

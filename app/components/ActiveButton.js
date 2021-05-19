@@ -8,7 +8,7 @@ function ActiveButton(props) {
       style={[
         buttonStyleSheet.buttonStyle,
         { ...props.style },
-        { backgroundColor: props.isActive ? colors.primary : colors.disabled },
+        { backgroundColor: props.isActive ? colors.disabled : colors.primary },
       ]}
     >
       <Text>{props.title}</Text>
