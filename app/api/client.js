@@ -25,7 +25,6 @@ const cancelRequest = () => source.cancel;
 
 export default {
   coinIO,
-  coinMarketCap,
   coinGeko,
   cancelRequest,
 };

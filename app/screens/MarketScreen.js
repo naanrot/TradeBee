@@ -20,6 +20,7 @@ import colors from "../components/colors";
 import Globals from "../utility/globals";
 import { createStackNavigator } from "@react-navigation/stack";
 import TradeScreen from "./TradeScreen";
+import { useNavigation } from "@react-navigation/native";
 
 if (
   Platform.OS === "android" &&
@@ -29,6 +30,8 @@ if (
 }
 
 function MarketScreen() {
+  const navigation = useNavigation();
+
   const [search, setSearch] = useState("");
   const [coins, setCoins] = useState([]);
   const [filteredCoins, setFilteredCoins] = useState(coins);
@@ -194,6 +197,7 @@ function MarketScreen() {
                   <MarketCard
                     coinName={item.asset_id_quote}
                     secretMessage={item.rate}
+                    navigation={navigation}
                     currency={item.asset_id_quote}
                     style={{
                       alignSelf: "center",
@@ -211,6 +215,8 @@ function MarketScreen() {
                   <MarketCard
                     coinName={item.name}
                     secretMessage={item.current_price}
+                    navigation={navigation}
+                    imageUrl={item.image}
                     currency={item.symbol}
                     style={{
                       alignSelf: "center",

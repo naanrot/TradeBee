@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { PureComponent } from "react";
 import {
   LayoutAnimation,
   Text,
@@ -24,72 +23,85 @@ if (
 const cryptoIcon = "https://cryptoicons.org/api/color/";
 const iconWidth = "/64";
 
-const MarketCard = (props) => {
-  const navigation = useNavigation();
+/**
+ * Using pure component for stop re-rendering of item in flat list
+ * Check this for more details
+ * https://stackoverflow.com/questions/44743904/virtualizedlist-you-have-a-large-list-that-is-slow-to-update
+ */
+class MarketCard extends PureComponent {
+  state = {
+    showDetail: false,
+  };
 
-  const [showDetail, toggleGraph] = useState(false);
-  const imageUrl = cryptoIcon + props.currency.toLowerCase() + iconWidth;
+  render() {
+    const navigation = props.navigation;
+    let imageUrl = props.imageUrl;
 
-  const fixed = props.secretMessage.toFixed(2).toString();
-  let tenPower = props.secretMessage.toString().indexOf(".");
-  tenPower = props.secretMessage.toString().length - tenPower;
+    if (typeof imageUrl === "undefined") {
+      imageUrl = cryptoIcon + props.currency.toLowerCase() + iconWidth;
+    }
 
-  return (
-    <MyCard style={props.style}>
-      <TouchableOpacity
-        onPress={() => {
-          LayoutAnimation.configureNext(
-            LayoutAnimation.create(
-              100,
-              LayoutAnimation.Types.linear,
-              LayoutAnimation.Properties.opacity
-            )
-          );
-          toggleGraph(!showDetail);
-        }}
-      >
-        <View style={cardStyle.coinContainer}>
-          <Image
-            style={cardStyle.cointImage}
-            source={{ uri: imageUrl, cache: "only-if-cached" }}
-          />
-          <Text style={cardStyle.coinName}>{props.coinName}</Text>
+    const fixed = props.secretMessage.toFixed(2).toString();
+    let tenPower = props.secretMessage.toString().indexOf(".");
+    tenPower = props.secretMessage.toString().length - tenPower;
 
-          <View style={{ flexGrow: 1 }} />
+    return (
+      <MyCard style={props.style}>
+        <TouchableOpacity
+          onPress={() => {
+            LayoutAnimation.configureNext(
+              LayoutAnimation.create(
+                100,
+                LayoutAnimation.Types.linear,
+                LayoutAnimation.Properties.opacity
+              )
+            );
+            setState({ showDetail: !state.showDetail });
+          }}
+        >
+          <View style={cardStyle.coinContainer}>
+            <Image
+              style={cardStyle.cointImage}
+              source={{ uri: imageUrl, cache: "only-if-cached" }}
+            />
+            <Text style={cardStyle.coinName}>{props.coinName}</Text>
 
-          <View style={cardStyle.priceContainer}>
-            <Text style={cardStyle.price}>{fixed + "x10"}</Text>
-            <Text style={cardStyle.tenPower}>{tenPower}</Text>
-          </View>
-        </View>
-        {showDetail && (
-          <>
-            <View style={cardStyle.showDetailContainer}>
-              <Button
-                onPress={() => {
-                  navigation.navigate("Trade", {
-                    coinName: props.coinName,
-                  });
-                }}
-                style={cardStyle.detailButton}
-                title="Trade"
-              />
-              <Button
-                onPress={() => {
-                  navigation.navigate("Detail", {
-                    coinName: props.coinName,
-                  });
-                }}
-                style={cardStyle.detailButton}
-                title="Show Details"
-              />
+            <View style={{ flexGrow: 1 }} />
+
+            <View style={cardStyle.priceContainer}>
+              <Text style={cardStyle.price}>{fixed + "x10"}</Text>
+              <Text style={cardStyle.tenPower}>{tenPower}</Text>
             </View>
-          </>
-        )}
-      </TouchableOpacity>
-    </MyCard>
-  );
-};
+          </View>
+          {state.showDetail && (
+            <>
+              <View style={cardStyle.showDetailContainer}>
+                <Button
+                  onPress={() => {
+                    navigation.navigate("Trade", {
+                      coinName: props.coinName,
+                    });
+                  }}
+                  style={cardStyle.detailButton}
+                  title="Trade"
+                />
+                <Button
+                  onPress={() => {
+                    navigation.navigate("Detail", {
+                      coinName: props.coinName,
+                    });
+                  }}
+                  style={cardStyle.detailButton}
+                  title="Show Details"
+                />
+              </View>
+            </>
+          )}
+        </TouchableOpacity>
+      </MyCard>
+    );
+  }
+}
 
 const cardStyle = StyleSheet.create({
   coinContainer: {
