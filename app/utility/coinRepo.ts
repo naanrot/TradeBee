@@ -6,9 +6,6 @@ class CoinRepo {
   }
 
   store(type: String, currency: String, data: Object) {
-    console.log(
-      "Key is " + this.generateKey(type, currency) + " and data is " + data
-    );
     this.dataStore.set(this.generateKey(type, currency), data);
   }
 

@@ -2,19 +2,18 @@ import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import AppText from "../components/AppText";
-import Globals from "../utility/globals";
+import StatusBarScreen from "../components/StatusBarScreen";
 
 function TradeScreen() {
   const route = useRoute();
 
-  //const repo = Globals.coinRepo;
   const { coinName } = route.params;
   console.log(coinName);
 
   return (
-    <View style={styles.container}>
-      <AppText style={{ color: "black" }}>Trade Screen</AppText>
-    </View>
+    <StatusBarScreen>
+      <AppText>Hello Ajmal</AppText>
+    </StatusBarScreen>
   );
 }
 
@@ -22,6 +21,7 @@ export default TradeScreen;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
