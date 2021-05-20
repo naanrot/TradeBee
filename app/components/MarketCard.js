@@ -34,19 +34,19 @@ class MarketCard extends PureComponent {
   };
 
   render() {
-    const navigation = props.navigation;
-    let imageUrl = props.imageUrl;
+    const navigation = this.props.navigation;
+    let imageUrl = this.props.imageUrl;
 
     if (typeof imageUrl === "undefined") {
-      imageUrl = cryptoIcon + props.currency.toLowerCase() + iconWidth;
+      imageUrl = cryptoIcon + this.props.currency.toLowerCase() + iconWidth;
     }
 
-    const fixed = props.secretMessage.toFixed(2).toString();
-    let tenPower = props.secretMessage.toString().indexOf(".");
-    tenPower = props.secretMessage.toString().length - tenPower;
+    const fixed = this.props.secretMessage.toFixed(2).toString();
+    let tenPower = this.props.secretMessage.toString().indexOf(".");
+    tenPower = this.props.secretMessage.toString().length - tenPower;
 
     return (
-      <MyCard style={props.style}>
+      <MyCard style={this.props.style}>
         <TouchableOpacity
           onPress={() => {
             LayoutAnimation.configureNext(
@@ -56,7 +56,7 @@ class MarketCard extends PureComponent {
                 LayoutAnimation.Properties.opacity
               )
             );
-            setState({ showDetail: !state.showDetail });
+            this.setState({ showDetail: !this.state.showDetail });
           }}
         >
           <View style={cardStyle.coinContainer}>
@@ -64,7 +64,7 @@ class MarketCard extends PureComponent {
               style={cardStyle.cointImage}
               source={{ uri: imageUrl, cache: "only-if-cached" }}
             />
-            <Text style={cardStyle.coinName}>{props.coinName}</Text>
+            <Text style={cardStyle.coinName}>{this.props.coinName}</Text>
 
             <View style={{ flexGrow: 1 }} />
 
@@ -73,13 +73,13 @@ class MarketCard extends PureComponent {
               <Text style={cardStyle.tenPower}>{tenPower}</Text>
             </View>
           </View>
-          {state.showDetail && (
+          {this.state.showDetail && (
             <>
               <View style={cardStyle.showDetailContainer}>
                 <Button
                   onPress={() => {
                     navigation.navigate("Trade", {
-                      coinName: props.coinName,
+                      coinName: this.props.coinName,
                     });
                   }}
                   style={cardStyle.detailButton}
@@ -88,7 +88,7 @@ class MarketCard extends PureComponent {
                 <Button
                   onPress={() => {
                     navigation.navigate("Detail", {
-                      coinName: props.coinName,
+                      coinName: this.props.coinName,
                     });
                   }}
                   style={cardStyle.detailButton}
