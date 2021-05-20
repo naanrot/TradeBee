@@ -20,6 +20,8 @@ import ActivityIndicator from "../components/ActivityIndicator";
 import loadMetadata from "../api/loadSymbol";
 import colors from "../components/colors";
 import Globals from "../utility/globals";
+import { createStackNavigator } from "@react-navigation/stack";
+import TradeScreen from "./TradeScreen";
 
 if (
   Platform.OS === "android" &&
@@ -27,8 +29,6 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-//const repo = new CoinRepo();
 
 function MarketScreen() {
   const [search, setSearch] = useState("");
@@ -245,4 +245,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MarketScreen;
+const Stack = createStackNavigator();
+
+export default function MarketScreenNavigation() {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="Market" component={MarketScreen} />
+      <Stack.Screen name="Trade" component={TradeScreen} />
+    </Stack.Navigator>
+  );
+}

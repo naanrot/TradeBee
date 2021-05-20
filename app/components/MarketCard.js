@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   LayoutAnimation,
@@ -10,8 +11,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import App from "../../App";
-import AppButton from "./AppButton";
 import colors from "./colors";
 import MyCard from "./MyCard";
 
@@ -26,6 +25,8 @@ const cryptoIcon = "https://cryptoicons.org/api/color/";
 const iconWidth = "/64";
 
 const MarketCard = (props) => {
+  const navigation = useNavigation();
+
   const [showDetail, toggleGraph] = useState(false);
   const imageUrl = cryptoIcon + props.currency.toLowerCase() + iconWidth;
 
@@ -64,8 +65,24 @@ const MarketCard = (props) => {
         {showDetail && (
           <>
             <View style={cardStyle.showDetailContainer}>
-              <Text style={cardStyle.detailButton}>Trade</Text>
-              <Text style={cardStyle.detailButton}>Show Details</Text>
+              <Button
+                onPress={() => {
+                  navigation.navigate("Trade", {
+                    coinName: props.coinName,
+                  });
+                }}
+                style={cardStyle.detailButton}
+                title="Trade"
+              />
+              <Button
+                onPress={() => {
+                  navigation.navigate("Detail", {
+                    coinName: props.coinName,
+                  });
+                }}
+                style={cardStyle.detailButton}
+                title="Show Details"
+              />
             </View>
           </>
         )}

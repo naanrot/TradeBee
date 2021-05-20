@@ -1,12 +1,15 @@
+import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import AppText from "../components/AppText";
 import Globals from "../utility/globals";
 
-function TradeScreen(props) {
-  const repo = Globals.coinRepo;
+function TradeScreen() {
+  const route = useRoute();
 
-  console.log(repo.get("top", "INR"));
+  //const repo = Globals.coinRepo;
+  const { coinName } = route.params;
+  console.log(coinName);
 
   return (
     <View style={styles.container}>
