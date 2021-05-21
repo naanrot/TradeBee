@@ -1,14 +1,16 @@
 import apiClient from "./client";
 
-const endpoint = "exchangerate/";
+const coinIOEndPoint = "exchangerate/";
 
-const fetchCoins = (baseId) => apiClient.coinIO.get(endpoint + baseId);
+const fetchCoins = (baseId) => apiClient.coinIO.get(coinIOEndPoint + baseId);
 
 const cancelFetchCoins = () => apiClient.cancelRequest;
 
+const coinGekoEndPoint = "coins/markets";
+
 const latestHistory = (currency) =>
-  apiClient.coinMarketCap.get("cryptocurrency/listings/latest", {
-    convert: currency,
+  apiClient.coinGeko.get(coinGekoEndPoint, {
+    vs_currency: currency,
   });
 
 export default {

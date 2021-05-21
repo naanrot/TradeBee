@@ -17,25 +17,14 @@ const coinIO = create({
   cancelToken: source.token,
 });
 
-//eacheajmal key
-//"f71983a6-8169-4b07-8bb1-498875d48b27",
-
-//ajuueache key
-//"49e45d2b-efef-4121-8c39-0eaa709bfb69",
-
-//dipak
-//"d76be65c-bb10-4a7b-9b9e-bc8c014fa3e6"
-const coinMarketCap = create({
-  baseURL: "https://pro-api.coinmarketcap.com/v1/",
-  headers: {
-    "X-CMC_PRO_API_KEY": "d76be65c-bb10-4a7b-9b9e-bc8c014fa3e6",
-  },
+const coinGeko = create({
+  baseURL: "https://api.coingecko.com/api/v3/",
 });
 
 const cancelRequest = () => source.cancel;
 
 export default {
   coinIO,
-  coinMarketCap,
+  coinGeko,
   cancelRequest,
 };

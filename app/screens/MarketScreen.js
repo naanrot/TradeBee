@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   LayoutAnimation,
 } from "react-native";
-import CoinRepo from "../utility/coinRepo";
 import coinFetchService from "../api/fetchCoins";
 import ActiveButton from "../components/ActiveButton";
 import MarketCard from "../components/MarketCard";
@@ -17,6 +16,11 @@ import { AntDesign } from "@expo/vector-icons";
 import { SearchBar } from "react-native-elements";
 import { Picker } from "@react-native-picker/picker";
 import ActivityIndicator from "../components/ActivityIndicator";
+import colors from "../components/colors";
+import Globals from "../utility/globals";
+import { createStackNavigator } from "@react-navigation/stack";
+import TradeScreen from "./TradeScreen";
+import { useNavigation } from "@react-navigation/native";
 
 if (
   Platform.OS === "android" &&
@@ -25,25 +29,20 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const marketCardColors = [
-  "#F5EB16",
-  "#767DFF",
-  "#F7931A",
-  "#FF0000",
-  "#F1CB60",
-  "#2CD3E1",
-];
-
-const repo = new CoinRepo();
-
 function MarketScreen() {
+  const navigation = useNavigation();
+
   const [search, setSearch] = useState("");
   const [coins, setCoins] = useState([]);
   const [filteredCoins, setFilteredCoins] = useState(coins);
   const [exchangerate, setExchangeRate] = useState("INR");
-  const [currentBtn, toggleActiveBtn] = useState(true);
+
+  //true for 'all' and false for 'top 100'
+  const [currentBtn, toggleActiveBtn] = useState(false);
   const [showSearchBar, toggleSearchBar] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const repo = Globals.coinRepo;
 
   useEffect(() => {
     loadData(currentBtn);
@@ -58,7 +57,6 @@ function MarketScreen() {
 
     setLoading(true);
     let data = repo.get(type, currency);
-    const endPoint = tempCurrentBtn ? "rates" : "data";
 
     if (typeof data === "undefined") {
       let response = tempCurrentBtn
@@ -66,15 +64,23 @@ function MarketScreen() {
         : await loadTop(currency);
       repo.store(type, currency, response.data);
 
-      setLoading(false);
-      setCoins(response["data"][endPoint]);
-      setFilteredCoins(response["data"][endPoint]);
+      if (tempCurrentBtn) {
+        setCoins(response.data.rates);
+        setFilteredCoins(response.data.rates);
+      } else {
+        setCoins(response.data);
+        setFilteredCoins(response.data);
+      }
     } else {
-      setLoading(false);
-
-      setCoins(data[endPoint]);
-      setFilteredCoins(data[endPoint]);
+      if (tempCurrentBtn) {
+        setCoins(data.rates);
+        setFilteredCoins(data.rates);
+      } else {
+        setCoins(data);
+        setFilteredCoins(data);
+      }
     }
+    setLoading(false);
   };
 
   const loadCoins = (currency) => coinFetchService.fetchCoins(currency);
@@ -124,17 +130,18 @@ function MarketScreen() {
             <View style={{ width: "100%", flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() => {
-                  toggleRequest(true);
-                }}
-              >
-                <ActiveButton isActive={currentBtn} title="All" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
                   toggleRequest(false);
                 }}
               >
                 <ActiveButton isActive={!currentBtn} title="Top 100" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  toggleRequest(true);
+                }}
+              >
+                <ActiveButton isActive={currentBtn} title="All" />
               </TouchableOpacity>
 
               <View style={{ flexGrow: 1 }} />
@@ -182,6 +189,7 @@ function MarketScreen() {
         {!loading && (
           <>
             {currentBtn && (
+              //'all' flat list
               <FlatList
                 data={filteredCoins}
                 keyExtractor={(coin) => coin.asset_id_quote}
@@ -189,6 +197,7 @@ function MarketScreen() {
                   <MarketCard
                     coinName={item.asset_id_quote}
                     secretMessage={item.rate}
+                    navigation={navigation}
                     currency={item.asset_id_quote}
                     style={{
                       alignSelf: "center",
@@ -198,14 +207,17 @@ function MarketScreen() {
               />
             )}
             {!currentBtn && (
+              //'top 100' flat list
               <FlatList
                 data={filteredCoins}
-                keyExtractor={(coin) => coin.id.toString()}
+                keyExtractor={(coin) => coin.id}
                 renderItem={({ item }) => (
                   <MarketCard
                     coinName={item.name}
-                    secretMessage={item["quote"][exchangerate]["price"]}
-                    cryptoSymbol={item.symbol}
+                    secretMessage={item.current_price}
+                    navigation={navigation}
+                    imageUrl={item.image}
+                    currency={item.symbol}
                     style={{
                       alignSelf: "center",
                     }}
@@ -230,7 +242,7 @@ const styles = StyleSheet.create({
 
   horFilterBtnContainer: {
     flexDirection: "row",
-    backgroundColor: "#b0bec5",
+    backgroundColor: colors.primary,
   },
 
   pickerStyle: {
@@ -248,4 +260,25 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MarketScreen;
+const Stack = createStackNavigator();
+
+export default () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Market"
+        options={{
+          headerShown: false,
+        }}
+        component={MarketScreen}
+      />
+      <Stack.Screen
+        name="Trade"
+        options={{
+          headerShown: true,
+        }}
+        component={TradeScreen}
+      />
+    </Stack.Navigator>
+  );
+};

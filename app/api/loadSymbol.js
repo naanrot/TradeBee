@@ -1,9 +1,13 @@
 import React from "react";
-import client from "./client";
+import { create } from "apisauce";
+
+const width = "/200";
+
+const cryptoIcon = create({
+  baseUrl: "https://cryptoicons.org/api/",
+});
 
 const loadMetadata = (currency) =>
-  client.coinMarketCap.get("cryptocurrency/info", {
-    symbol: currency,
-  });
+  cryptoIcon.get("icon/" + currency.toLowerCase() + width);
 
 export default loadMetadata;
