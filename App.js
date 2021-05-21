@@ -6,6 +6,7 @@ import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
 import MarketScreen from "./app/screens/MarketScreen";
+import GraphScreen from "./app/screens/GraphScreen";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
@@ -20,10 +21,13 @@ const firebaseConfig = {
 // //When ever expo build:android command is executed, do step 3 from this url https://docs.expo.io/versions/latest/sdk/google-sign-in/
 //in 'Usage with Firebase'
 export default function App() {
-  firebase.initializeApp(firebaseConfig);
+  // firebase.initializeApp(firebaseConfig);
   return (
-    <NavigationContainer>
-      <MainNavigation />
-    </NavigationContainer>
+    // <NavigationContainer>
+    /* <MainNavigation /> */
+    //  </NavigationContainer> */
+    <StatusBarScreen>
+      <GraphScreen />
+    </StatusBarScreen>
   );
 }
