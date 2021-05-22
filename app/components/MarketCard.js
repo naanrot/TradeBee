@@ -9,9 +9,12 @@ import {
   Button,
   StyleSheet,
   View,
+  FlatList,
 } from "react-native";
+import { VictoryChart, VictoryLine, VictoryTheme } from "victory-native";
 import colors from "./colors";
 import MyCard from "./MyCard";
+import PercentageDiffText from "./PercentageDiffText";
 
 if (
   Platform.OS === "android" &&
@@ -23,6 +26,22 @@ if (
 const cryptoIcon = "https://cryptoicons.org/api/color/";
 const iconWidth = "/64";
 
+const data = [
+  { quarter: 1, earnings: 13000 },
+  { quarter: 2, earnings: 16500 },
+  { quarter: 3, earnings: 14250 },
+  { quarter: 4, earnings: 19000 },
+];
+
+const someData = [];
+data.forEach((item) => {
+  someData.push({
+    earnings: item.earnings,
+  });
+});
+
+console.log(someData);
+
 /**
  * Using pure component for stop re-rendering of item in flat list
  * Check this for more details
@@ -33,17 +52,60 @@ class MarketCard extends PureComponent {
     showDetail: false,
   };
 
+  initCoinData() {
+    this.props.isAll ? this.loadFromAll() : this.loadFromTop();
+  }
+
+  loadFromAll() {
+    const coinData = this.props.coinData;
+    this.coinName = coinData.asset_id_quote;
+    this.currentPrice = coinData.rate;
+    this.symbol = coinData.asset_id_quote;
+  }
+
+  loadFromTop() {
+    const coinData = this.props.coinData;
+    this.coinName = coinData.name;
+    this.currentPrice = coinData.current_price;
+    this.symbol = coinData.symbol;
+    this.coinChangePercentage = [
+      {
+        title: "Past hour",
+        value: this.props.coinData.price_change_percentage_1h_in_currency,
+      },
+      {
+        title: "Past 24 hour",
+        value: this.props.coinData.price_change_percentage_24h_in_currency,
+      },
+      {
+        title: "Past 7 days",
+        value: this.props.coinData.price_change_percentage_7d_in_currency,
+      },
+      {
+        title: "Past 14 days",
+        value: this.props.coinData.price_change_percentage_14d_in_currency,
+      },
+      {
+        title: "Past 30 days",
+        value: this.props.coinData.price_change_percentage_30d_in_currency,
+      },
+    ];
+    this.imageUrl = coinData.image;
+  }
+
   render() {
+    this.initCoinData();
+
     const navigation = this.props.navigation;
-    let imageUrl = this.props.imageUrl;
+    let imageUrl = this.imageUrl;
 
     if (typeof imageUrl === "undefined") {
-      imageUrl = cryptoIcon + this.props.currency.toLowerCase() + iconWidth;
+      imageUrl = cryptoIcon + this.symbol.toLowerCase() + iconWidth;
     }
 
-    const fixed = this.props.secretMessage.toFixed(2).toString();
-    let tenPower = this.props.secretMessage.toString().indexOf(".");
-    tenPower = this.props.secretMessage.toString().length - tenPower;
+    const fixed = this.currentPrice.toFixed(2).toString();
+    let tenPower = this.currentPrice.toString().indexOf(".");
+    tenPower = this.currentPrice.toString().length - tenPower;
 
     return (
       <MyCard style={this.props.style}>
@@ -64,7 +126,7 @@ class MarketCard extends PureComponent {
               style={cardStyle.cointImage}
               source={{ uri: imageUrl, cache: "only-if-cached" }}
             />
-            <Text style={cardStyle.coinName}>{this.props.coinName}</Text>
+            <Text style={cardStyle.coinName}>{this.coinName}</Text>
 
             <View style={{ flexGrow: 1 }} />
 
@@ -75,11 +137,31 @@ class MarketCard extends PureComponent {
           </View>
           {this.state.showDetail && (
             <>
+              {!this.props.isAll && (
+                <>
+                  <FlatList
+                    data={this.coinChangePercentage}
+                    keyExtractor={(coinChange) => coinChange.title}
+                    renderItem={({ item }) => {
+                      return (
+                        <PercentageDiffText
+                          title={item.title}
+                          value={item.value}
+                          titleStyle={cardStyle.marketScreenTextStyle}
+                          valueStyle={cardStyle.marketScreenTextStyle}
+                        />
+                      );
+                    }}
+                  />
+                </>
+              )}
               <View style={cardStyle.showDetailContainer}>
                 <Button
                   onPress={() => {
                     navigation.navigate("Trade", {
-                      coinName: this.props.coinName,
+                      coinName: this.coinName,
+                      exchangerate: this.props.exchangerate,
+                      imageUrl: imageUrl,
                     });
                   }}
                   style={cardStyle.detailButton}
@@ -88,7 +170,7 @@ class MarketCard extends PureComponent {
                 <Button
                   onPress={() => {
                     navigation.navigate("Detail", {
-                      coinName: this.props.coinName,
+                      coinName: this.coinName,
                     });
                   }}
                   style={cardStyle.detailButton}
@@ -139,6 +221,11 @@ const cardStyle = StyleSheet.create({
     marginHorizontal: 8,
     fontSize: 18,
     color: colors.secondary,
+  },
+
+  marketScreenTextStyle: {
+    fontSize: 18,
+    margin: 10,
   },
 
   showDetailContainer: {
