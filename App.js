@@ -22,9 +22,5 @@ const firebaseConfig = {
 //in 'Usage with Firebase'
 export default function App() {
   firebase.initializeApp(firebaseConfig);
-  return (
-    <NavigationContainer>
-      <GraphScreen />
-    </NavigationContainer>
-  );
+  return <MainNavigation />;
 }

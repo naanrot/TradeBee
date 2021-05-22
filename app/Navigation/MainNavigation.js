@@ -6,6 +6,7 @@ import MarketScreen from "../screens/MarketScreen";
 import TradeScreen from "../screens/TradeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import DetailsScreen from "../screens/DetailsScreen";
+import GraphScreen from "../screens/GraphScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,8 +37,8 @@ export default function TabNavigator() {
           }}
         />
         <Tab.Screen
-          name="Detail"
-          component={DetailsScreen}
+          name="GraphScreen"
+          component={GraphScreen}
           initialParams={{
             coinName: "null",
           }}

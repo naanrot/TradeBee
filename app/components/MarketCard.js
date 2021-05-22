@@ -169,8 +169,8 @@ class MarketCard extends PureComponent {
                 />
                 <Button
                   onPress={() => {
-                    navigation.navigate("Detail", {
-                      coinName: this.coinName,
+                    navigation.navigate("GraphScreen", {
+                      coinName: this.symbol,
                     });
                   }}
                   style={cardStyle.detailButton}
