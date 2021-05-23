@@ -10,6 +10,7 @@ import GraphScreen from "./app/screens/GraphScreen";
 import UserAuth from "./app/Navigation/UserAuth";
 import AuthContext from "./app/auth/context";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
   authDomain: "tradebee-46f89.firebaseapp.com",
