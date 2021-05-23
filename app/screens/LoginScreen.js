@@ -142,6 +142,7 @@ class LoginScreen extends React.Component {
                       iconName="lock"
                       placeholder="Password"
                       width="100%"
+                      secureTextEntry={true}
                       onChangeText={handleChange("password")}
                     />
                     {touched.password && (

@@ -11,6 +11,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import MainNavigation from "./MainNavigation";
 import WalletPage from "../components/ProfileCards/WalletPage";
 import CardPage from "../components/ProfileCards/CardPage";
+import AssetAllocation from "../components/AssetAllocation";
+import CurrencyConverter from "../components/CurrencyConverter";
 
 const Stack = createStackNavigator();
 // je ith  component declare kele ahet under Stack.Navigator tyache madhe apn navigation props pass karu shako
@@ -35,6 +37,8 @@ export default StackNavigator = () => (
 
     <Stack.Screen name="Wallet" component={WalletPage} />
     <Stack.Screen name="Card" component={CardPage} />
+    <Stack.Screen name="AssetAllocation" component={AssetAllocation} />
+    <Stack.Screen name="CurrencyConverter" component={CurrencyConverter} />
     <Stack.Screen
       name="HelpAndSupport"
       component={HelpAndSupport}

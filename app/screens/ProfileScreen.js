@@ -6,10 +6,10 @@ import UserProfile from "../components/UserProfile";
 
 function ProfileScreen(props) {
   return (
-    <StatusBarScreen>
+    <View>
       <UserProfile />
       <ProfileComponent />
-    </StatusBarScreen>
+    </View>
   );
 }
 

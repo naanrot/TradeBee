@@ -5,7 +5,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 function MaterialCommunity({ onPress, name, size, color, selectionColor }) {
   return (
-    <TouchableOpacity underlayColor="black" onPress={onPress}>
+    <TouchableOpacity
+      underlayColor="black"
+      onPress={alert("Currently This function is under Development")}
+    >
       <MaterialCommunityIcons
         name={name}
         size={size}

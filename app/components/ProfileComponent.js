@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -15,6 +15,7 @@ import ItemContainer from "./ItemContainer";
 import WalletBottomSheet from "./ProfileCards/WalletBottomSheet";
 import Temp from "./RoughFile";
 import UserProfile from "./UserProfile";
+import AuthContext from "../auth/context";
 
 const Items = [
   {
@@ -79,6 +80,7 @@ const Items = [
   },
 ];
 function ProfileComponent({ navigation }) {
+  const temp = useContext(AuthContext);
   return (
     <ScrollView>
       <UserProfile />
@@ -104,10 +106,7 @@ function ProfileComponent({ navigation }) {
           />
           <View style={styles.container}>
             <TouchableHighlight>
-              <Text
-                style={styles.button}
-                onPress={() => console.log("Log Out")}
-              >
+              <Text style={styles.button} onPress={() => temp.setUser()}>
                 Log Out
               </Text>
             </TouchableHighlight>
