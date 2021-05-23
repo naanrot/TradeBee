@@ -15,6 +15,7 @@ import { VictoryChart, VictoryLine, VictoryTheme } from "victory-native";
 import colors from "./colors";
 import MyCard from "./MyCard";
 import PercentageDiffText from "./PercentageDiffText";
+import TextButton from "./TextButton";
 
 if (
   Platform.OS === "android" &&
@@ -156,24 +157,25 @@ class MarketCard extends PureComponent {
                 </>
               )}
               <View style={cardStyle.showDetailContainer}>
-                <Button
+                <TextButton
                   onPress={() => {
                     navigation.navigate("Trade", {
                       coinName: this.coinName,
                       exchangerate: this.props.exchangerate,
-                      imageUrl: imageUrl,
+                      coinSymbol: this.symbol,
+                      coinPrice: this.currentPrice,
                     });
                   }}
-                  style={cardStyle.detailButton}
+                  btnTextStyle={cardStyle.detailButton}
                   title="Trade"
                 />
-                <Button
+                <TextButton
                   onPress={() => {
                     navigation.navigate("GraphScreen", {
                       coinName: this.symbol,
                     });
                   }}
-                  style={cardStyle.detailButton}
+                  btnTextStyle={cardStyle.detailButton}
                   title="Show Details"
                 />
               </View>

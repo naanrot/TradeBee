@@ -7,6 +7,7 @@ import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
 import MarketScreen from "./app/screens/MarketScreen";
 import GraphScreen from "./app/screens/GraphScreen";
+import UserAuth from "./app/Navigation/UserAuth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
