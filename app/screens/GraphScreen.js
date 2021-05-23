@@ -1,80 +1,73 @@
-// import React, { useEffect, useState } from "react";
-// import {
-//   View,
-//   StyleSheet,
-//   FlatList,
-//   ScrollView,
-//   TextInput,
-// } from "react-native";
-// import axios from "axios";
-// import AppTextInput from "../components/AppTextInput";
-// import AppText from "../components/AppText";
-// import Coin from "../components/Coin";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  TextInput,
+} from "react-native";
 
-// function GraphScreen(props) {
-//   const [coins, setCoins] = useState([]);
-//   const [search, setSearch] = useState("");
-//   const [filteredDataSource, setFilteredDataSource] = useState([]);
+import { useRoute } from "@react-navigation/native";
+import AppTextInput from "../components/AppTextInput";
+import AppText from "../components/AppText";
+import Coin from "../components/Coin";
+import Apidata from "../api/client";
+import HistoryData from "../api/history";
+import { VictoryBar, VictoryChart } from "victory-native";
+import ActivityIndicator from "../components/ActivityIndicator";
 
-//   useEffect(() => {
-//     axios
-//       .get(
-//         "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false"
-//       )
-//       .then((res) => {
-//         setCoins(res.data);
-//         setFilteredDataSource(res.data);
-//       })
-//       .catch((err) => {
-//         alert("its error");
-//       });
-//   });
+function GraphScreen(props) {
+  const [coins, setCoins] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [graph, setGraph] = useState([]);
+  const route = useRoute();
 
-//   //   const filteredCoins = coins.filter((coin) =>
-//   //     coin.name.toLowerCase().includes(search.toLowerCase())
-//   //   );
-//   //   const searchFilterFunction = (text) => {
-//   //     if (text) {
-//   //       const newData = coins.filter((item) => {
-//   //         const itemData = item.name ? item.id.toUpperCase() : "".toUpperCase();
-//   //         const textData = text.toUpperCase();
-//   //         return itemData.indexOf(textData) > -1;
-//   //       });
-//   //       setFilteredDataSource(newData);
-//   //       setSearch(text);
-//   //     } else {
-//   //       setFilteredDataSource(coins);
-//   //       setSearch(text);
-//   //     }
-//   //   };
-//   return (
-//     <ScrollView style={styles.container}>
-//       <TextInput
-//         style={{ backgroundColor: "yellowgreen" }}
-//         placeholder="Search"
-//         onChangeText={(text) => searchFilterFunction(text)}
-//         value={search}
-//       />    
+  const { coinName } = route.params;
+  console.log(coinName);
+  let d = new Date();
+  d.setDate(d.getDate() - 7);
 
-//       <FlatList
-//         data={coins}
-//         keyExtractor={(menuItem) => menuItem.id.toString()}
-//         renderItem={({ item }) => (
-//           <Coin
-//             image={item.image}
-//             name={item.name}
-//             price={item.current_price}
-//             symbol={item.symbol}
-//             volume={item.market_cap}
-//           />
-//         )}
-//       />
-//     </ScrollView>
-//   );
-// }
+  const graph_items = [];
 
-// export default GraphScreen;
+  useEffect(() => {
+    temp();
+  }, []);
 
-// const styles = StyleSheet.create({
-//   container: {},
-// });
+  const temp = async () => {
+    const data = await HistoryData.gettingHistory(
+      coinName.toUpperCase(),
+      "USD",
+      d.toISOString()
+    );
+    // console.log(data.data);
+    if (data.ok) {
+      data.data.forEach((item) => {
+        graph_items.push({ time: item.time_close, rate: item.rate_close });
+        setGraph(graph_items);
+      });
+      console.log(graph_items);
+    } else {
+      console.log(data.problem);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <View>
+      {loading && <ActivityIndicator />}
+      {!loading && (
+        <VictoryChart>
+          <VictoryBar data={graph} x="time" y="rate" />
+        </VictoryChart>
+      )}
+    </View>
+  );
+}
+
+export default GraphScreen;
+
+const styles = StyleSheet.create({
+  container: {},
+});
