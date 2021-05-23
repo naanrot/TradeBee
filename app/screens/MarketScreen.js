@@ -122,6 +122,20 @@ function MarketScreen() {
     }
   };
 
+  function ItemRender(props) {
+    return (
+      <MarketCard
+        coinData={props.coinData}
+        exchangerate={exchangerate}
+        isAll={currentBtn}
+        navigation={navigation}
+        style={{
+          alignSelf: "center",
+        }}
+      />
+    );
+  }
+
   return (
     <StatusBarScreen>
       <View style={styles.container}>
@@ -193,17 +207,7 @@ function MarketScreen() {
               <FlatList
                 data={filteredCoins}
                 keyExtractor={(coin) => coin.asset_id_quote}
-                renderItem={({ item }) => (
-                  <MarketCard
-                    coinName={item.asset_id_quote}
-                    secretMessage={item.rate}
-                    navigation={navigation}
-                    currency={item.asset_id_quote}
-                    style={{
-                      alignSelf: "center",
-                    }}
-                  />
-                )}
+                renderItem={({ item }) => <ItemRender coinData={item} />}
               />
             )}
             {!currentBtn && (
@@ -211,18 +215,7 @@ function MarketScreen() {
               <FlatList
                 data={filteredCoins}
                 keyExtractor={(coin) => coin.id}
-                renderItem={({ item }) => (
-                  <MarketCard
-                    coinName={item.name}
-                    secretMessage={item.current_price}
-                    navigation={navigation}
-                    imageUrl={item.image}
-                    currency={item.symbol}
-                    style={{
-                      alignSelf: "center",
-                    }}
-                  />
-                )}
+                renderItem={({ item }) => <ItemRender coinData={item} />}
               />
             )}
           </>

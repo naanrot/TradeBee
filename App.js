@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StatusBarScreen from "./app/components/StatusBarScreen";
 import MainNavigation from "./app/Navigation/MainNavigation";
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,6 +7,8 @@ import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
 import MarketScreen from "./app/screens/MarketScreen";
 import GraphScreen from "./app/screens/GraphScreen";
+import UserAuth from "./app/Navigation/UserAuth";
+import AuthContext from "./app/auth/context";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
@@ -18,16 +20,20 @@ const firebaseConfig = {
   measurementId: "G-DBPK74BGCP",
 };
 
-// //When ever expo build:android command is executed, do step 3 from this url https://docs.expo.io/versions/latest/sdk/google-sign-in/
-//in 'Usage with Firebase'
 export default function App() {
   // firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
+
+  const [user, setUser] = useState();
   return (
-    // <NavigationContainer>
-    /* <MainNavigation /> */
-    //  </NavigationContainer> */
-    <StatusBarScreen>
-      <GraphScreen />
-    </StatusBarScreen>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <NavigationContainer>
+        {user ? <MainNavigation /> : <UserAuth />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
