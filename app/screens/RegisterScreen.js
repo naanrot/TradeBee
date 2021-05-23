@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import AppText from "../components/AppText";
 
-
 import { Formik } from "formik";
 
 import * as Yup from "yup";
@@ -37,7 +36,7 @@ function RegisterScreen({ navigation }) {
 
   // const fs = firebase.default.firestore();
   const register = (value) => {
-    firebase
+    firebase.default
       .auth()
       .createUserWithEmailAndPassword(value.email, value.password)
 
@@ -48,6 +47,7 @@ function RegisterScreen({ navigation }) {
             onPress: () => navigation.navigate("Login"),
           },
         ]);
+        return res.user.updateProfile({ displayName: value.username });
       })
       .catch((error) => {
         alert(error.message);
@@ -55,12 +55,12 @@ function RegisterScreen({ navigation }) {
   };
 
   return (
-    <ScrollView>
-      <ImageBackground
-        style={styles.image}
-        source={require("../assets/backGround.png")}
-        resizeMode="stretch"
-      >
+    <ImageBackground
+      style={styles.image}
+      source={require("../assets/backGround.png")}
+      resizeMode="stretch"
+    >
+      <ScrollView>
         <View style={styles.container}>
           <AppText style={styles.tagline}>Be a Crypto trader Today</AppText>
           <TouchableWithoutFeedback style={styles.cc}>
@@ -169,8 +169,8 @@ function RegisterScreen({ navigation }) {
             </View>
           </TouchableWithoutFeedback>
         </View>
-      </ImageBackground>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+    flexWrap: "nowrap",
   },
   tagline: {
     color: "black",

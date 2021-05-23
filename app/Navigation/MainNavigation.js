@@ -2,6 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileNavigation from "./ProfileNavigation";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import MarketScreen from "../screens/MarketScreen";
 import TradeScreen from "../screens/TradeScreen";
 import { NavigationContainer } from "@react-navigation/native";
@@ -22,17 +23,12 @@ export default function TabNavigator() {
           inactiveTintColor: "black",
         }}
       >
-        {/* Below Tab are not Used */}
         <Tab.Screen
           name="Market"
           component={MarketScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="account"
-                color={color}
-                size={size}
-              />
+              <Ionicons name="ios-cube-sharp" color={color} size={size} />
             ),
           }}
         />
@@ -44,11 +40,7 @@ export default function TabNavigator() {
           }}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="account"
-                color={color}
-                size={size}
-              />
+              <Ionicons name="ios-bar-chart" color={color} size={size} />
             ),
           }}
         />

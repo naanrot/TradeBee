@@ -1,13 +1,15 @@
-import client from "./client";
+import apiClient from "./client";
 
-const endpoint = "exchangerate/";
+const historyEndpoint = "exchangerate/";
 
-const gettingHistory = (crypto, currency, time_start, time_end) =>
-  client.coinIO.get(endpoint + crypto + "/" + currency + "/history", {
-    period_id: "1DAY",
-    time_start: time_start,
-    time_end: time_end,
-  });
+const gettingHistory = (crypto_coin, currency, time_start, time_end) =>
+  apiClient.coinIO.get(
+    historyEndpoint + crypto_coin + "/" + currency + "/history",
+    {
+      period_id: "1DAY",
+      time_start: time_start,
+    }
+  );
 
 export default {
   gettingHistory,

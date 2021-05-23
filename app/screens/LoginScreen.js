@@ -21,6 +21,8 @@ import * as firebase from "firebase";
 import * as GoogleSignIn from "expo-google-sign-in";
 import MyCard from "../components/MyCard";
 import colors from "../components/colors";
+import RegisterScreen from "./RegisterScreen";
+import AuthContext from "../auth/context";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("* Email"),
@@ -32,6 +34,8 @@ class LoginScreen extends React.Component {
     fontsLoaded: false,
   };
 
+  static contextType = AuthContext;
+
   async loadFonts() {
     await Font.loadAsync({
       Aladin: require("../assets/fonts/Aladin-Regular.ttf"),
@@ -42,6 +46,7 @@ class LoginScreen extends React.Component {
   componentDidMount() {
     this.loadFonts();
     this.initAsync();
+    // const user_data = this.context;
   }
 
   initAsync = async () => {
@@ -73,7 +78,9 @@ class LoginScreen extends React.Component {
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
       .then((userCred) => {
-        console.log("Successfully signed in");
+        // alert("Successfully signed in");
+        console.log(data.email, data.password);
+        this.context.setUser(data);
       })
       .catch((error) => {
         alert(error.message);
@@ -161,12 +168,14 @@ class LoginScreen extends React.Component {
                 <Text>Sign Up using Google</Text>
               </TouchableOpacity>
 
-              <Text style={mainStyleSheet.memberSignUpTextView}>
-                Not a member? Sign Up
-              </Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Register")}
+              >
+                <Text style={mainStyleSheet.memberSignUpTextView}>
+                  Not a member? Sign Up
+                </Text>
+              </TouchableOpacity>
             </MyCard>
-
-            <StatusBar style="auto" />
           </ImageBackground>
         </StatusBarScreen>
       );
@@ -202,9 +211,10 @@ const mainStyleSheet = StyleSheet.create({
   },
 
   imageBackground: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
+    height: "100%",
   },
 
   memberSignUpTextView: {

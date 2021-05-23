@@ -11,10 +11,15 @@ const source = axios.CancelToken.source();
 //FBBD7DDA-4A58-461D-A20E-96C2E778C98B
 //B1DFA5C6-C16C-4AAA-B2B5-B79CB09F10DB
 
+//dipak
+//75DC83BE-7111-474A-85B3-38F24AAA381E
+
+// dipak
+//694E8AB2-DDD8-4BE4-959D-CAEC37EA3277
 const coinIO = create({
   baseURL: "https://rest.coinapi.io/v1/",
   headers: {
-    "X-CoinAPI-Key": "FBBD7DDA-4A58-461D-A20E-96C2E778C98B",
+    "X-CoinAPI-Key": "75DC83BE-7111-474A-85B3-38F24AAA381E",
   },
   cancelToken: source.token,
 });
