@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-import StatusBarScreen from "./app/components/StatusBarScreen";
 import MainNavigation from "./app/Navigation/MainNavigation";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "./app/screens/LoginScreen";
-import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
-import MarketScreen from "./app/screens/MarketScreen";
-import GraphScreen from "./app/screens/GraphScreen";
 import UserAuth from "./app/Navigation/UserAuth";
 import AuthContext from "./app/auth/context";
 

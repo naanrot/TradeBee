@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import * as Font from "expo-font";
 import {
   Image,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   ImageBackground,
-  StatusBar,
   TouchableOpacity,
 } from "react-native";
 import AppText from "../components/AppText";
@@ -21,7 +20,6 @@ import * as firebase from "firebase";
 import * as GoogleSignIn from "expo-google-sign-in";
 import MyCard from "../components/MyCard";
 import colors from "../components/colors";
-import RegisterScreen from "./RegisterScreen";
 import AuthContext from "../auth/context";
 
 const validationSchema = Yup.object().shape({
@@ -57,7 +55,7 @@ class LoginScreen extends React.Component {
   _syncUserWithStateAsync = async () => {
     const user = await GoogleSignIn.signInSilentlyAsync();
     this.setState({ user }, () => {
-      console.log(user);
+      this.context.setUser(user);
     });
   };
 
@@ -78,7 +76,7 @@ class LoginScreen extends React.Component {
       .auth()
       .signInWithEmailAndPassword(data.email, data.password)
       .then((userCred) => {
-        // alert("Successfully signed in");
+        // alert("Successfully signed \in");
         console.log(data.email, data.password);
         this.context.setUser(data);
       })
