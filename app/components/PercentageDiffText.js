@@ -9,11 +9,15 @@ function PercentageDiffText({
   valueStyle,
 }) {
   const differ = ":";
-  const tempValue = typeof value === "undefined" ? "" : value.toString();
+
+  const tempValue =
+    typeof value === "undefined" || value === null ? "" : value.toString();
+
   const [isPositive, setDiff] = useState(!tempValue.includes("-"));
+
   value =
-    typeof value === "undefined"
-      ? "Value not passed"
+    typeof value === "undefined" || value === null
+      ? "Not available"
       : value.toFixed(2).toString();
 
   return (

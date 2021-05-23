@@ -6,40 +6,115 @@ import {
   StyleSheet,
   View,
   Text,
-  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ActiveButton from "../components/ActiveButton";
 import colors from "../components/colors";
 import AppText from "../components/AppText";
 import PercentageDiffText from "../components/PercentageDiffText";
+import TextButton from "../components/TextButton";
+import AppButton from "../components/AppButton";
+import { Button } from "react-native-elements/dist/buttons/Button";
 
 function TradeScreen() {
+  const priceInitialText = "Amount";
   const route = useRoute();
   const [isBuying, setBuying] = useState(true);
-  const [loadingData, setLoading] = useState(false);
+  const [price, setPrice] = useState(priceInitialText);
   const [convertedPrice, setConvertedPrice] = useState("0");
 
-  const { coinName, exchangerate, imageUrl } = route.params;
+  const { coinName, exchangerate, coinPrice, coinSymbol } = route.params;
   console.log(coinName);
 
+  function NumPadRow({ text1, text2, text3 }) {
+    let numPadStyle = StyleSheet.create({
+      container: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+      },
+
+      textContainerStyle: {
+        flex: 1,
+        borderWidth: 1,
+        justifyContent: "center",
+      },
+
+      numberStyle: {
+        alignSelf: "center",
+        fontSize: 20,
+        fontWeight: "300",
+      },
+    });
+
+    const onPress = (val) => {
+      let tempPrice = price;
+      if (price === priceInitialText) tempPrice = "";
+      if (val === "ESC") {
+        tempPrice = tempPrice.slice(0, tempPrice.length - 1);
+        setPrice(tempPrice);
+      } else if (val === ".") {
+        if (price.indexOf(".") === -1 && price !== priceInitialText) {
+          setPrice(tempPrice + val);
+        } else {
+          return;
+        }
+      } else {
+        setPrice(tempPrice + val);
+      }
+
+      if (val !== "ESC") {
+        let cPrice = parseInt(tempPrice + val) / coinPrice;
+        setConvertedPrice(cPrice.toString());
+      } else {
+        if (tempPrice.length === 0) {
+          setPrice(priceInitialText);
+          tempPrice = "0";
+        }
+        let cPrice = parseInt(tempPrice) / coinPrice;
+        setConvertedPrice(cPrice.toString());
+      }
+    };
+
+    return (
+      <View style={numPadStyle.container}>
+        <TextButton
+          containerStyle={numPadStyle.textContainerStyle}
+          btnTextStyle={numPadStyle.numberStyle}
+          title={text1}
+          onPress={() => onPress(text1)}
+        />
+        <TextButton
+          containerStyle={numPadStyle.textContainerStyle}
+          btnTextStyle={numPadStyle.numberStyle}
+          title={text2}
+          onPress={() => onPress(text2)}
+        />
+        <TextButton
+          containerStyle={numPadStyle.textContainerStyle}
+          btnTextStyle={numPadStyle.numberStyle}
+          title={text3}
+          onPress={() => onPress(text3)}
+        />
+      </View>
+    );
+  }
+
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View style={styles.primaryContainer}>
         <View style={styles.inputTextContainer}>
           <View
             style={{ flex: 1, flexDirection: "row", alignItems: "baseline" }}
           >
-            <Text style={{ fontSize: 13, margin: 10 }}>INR</Text>
-            <TextInput
-              keyboardType="numeric"
-              placeholder="0"
-              style={styles.initialTextInput}
-            />
+            <Text style={{ fontSize: 13, margin: 10 }}>{exchangerate}</Text>
+            <Text style={styles.initialTextInput}>{price}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-            <Text style={{ fontSize: 13, margin: 10 }}>BTC</Text>
+            <Text style={{ fontSize: 13, margin: 10 }}>
+              {coinSymbol.toUpperCase()}
+            </Text>
             <Text style={styles.convertedTextContainer}>{convertedPrice}</Text>
           </View>
         </View>
@@ -70,22 +145,11 @@ function TradeScreen() {
         </View>
       </View>
       <View style={styles.secondaryContainer}>
-        <Image style={styles.bitCoinImage} source={{ uri: imageUrl }} />
-        <AppText style={styles.coinNameStyle}>{coinName}</AppText>
-        {loadingData && <ActivityIndicator />}
-        {!loadingData && (
-          <View style={{ width: "100%" }}>
-            <PercentageDiffText
-              containerStyle={{
-                width: "100%",
-              }}
-              titleStyle={styles.marketTextStyle}
-              valueStyle={styles.marketTextStyle}
-              title="Past hour"
-              value={-8}
-            />
-          </View>
-        )}
+        <NumPadRow text1="1" text2="2" text3="3" />
+        <NumPadRow text1="4" text2="5" text3="6" />
+        <NumPadRow text1="7" text2="8" text3="9" />
+        <NumPadRow text1="." text2="0" text3="ESC" />
+        <AppButton title="Pay" />
       </View>
     </View>
   );
@@ -108,11 +172,11 @@ const styles = StyleSheet.create({
   },
 
   inputTextContainer: {
-    flex: 0.8,
+    flex: 0.7,
   },
 
   buySellContainer: {
-    flex: 0.2,
+    flex: 0.3,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -129,10 +193,10 @@ const styles = StyleSheet.create({
   },
 
   secondaryContainer: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
     padding: 10,
-    alignItems: "flex-start",
+    alignItems: "center",
+    justifyContent: "space-evenly",
   },
 
   marketTextStyle: {
