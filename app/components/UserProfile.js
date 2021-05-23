@@ -17,6 +17,7 @@ import MaterialIcon from "./MaterialIcon";
 import * as ImagePicker from "expo-image-picker";
 import AppText from "./AppText";
 import AuthContext from "../auth/context";
+import StatusBarScreen from "./StatusBarScreen";
 function UserProfile({ props }) {
   const [image, setImage] = useState(null);
   const { user } = useContext(AuthContext);
@@ -48,55 +49,65 @@ function UserProfile({ props }) {
 
   // console.log(firebase.default.auth().currentUser.displayName);
   return (
-    <View style={styles.InnerContainer}>
-      <View style={styles.icon}>
-        <MaterialIcon name="qr-code-scanner" size={30} />
-        <View style={{ flexGrow: 1 }} />
-        <MaterialCommunity name="theme-light-dark" size={30} />
-      </View>
+    <StatusBarScreen>
+      <View style={styles.InnerContainer}>
+        <View style={styles.icon}>
+          <MaterialIcon name="qr-code-scanner" size={30} />
+          <View style={{ flexGrow: 1 }} />
+          <MaterialCommunity name="theme-light-dark" size={30} />
+        </View>
 
-      <View style={styles.Usercontainer}>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity onPress={pickImage}>
-            {image === null ? (
-              <Image
-                source={require("../assets/minion.jpg")}
-                style={{ height: 70, width: 70, borderRadius: 35, margin: 15 }}
-              />
-            ) : (
-              <Image
-                source={{ uri: image }}
-                style={{ height: 70, width: 70, borderRadius: 35, margin: 15 }}
-              />
-            )}
-          </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <AppText style={{ color: "black" }}>
-              {firebase.default.auth().currentUser.displayName}
-            </AppText>
-            <AppText style={{ color: "black", fontSize: 15 }}>
-              {user.email}
-            </AppText>
-            <AppText
+        <View style={styles.Usercontainer}>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity onPress={pickImage}>
+              {image === null ? (
+                <Image
+                  source={require("../assets/minion.jpg")}
+                  style={{
+                    height: 70,
+                    width: 70,
+                    borderRadius: 35,
+                    margin: 15,
+                  }}
+                />
+              ) : (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    height: 70,
+                    width: 70,
+                    borderRadius: 35,
+                    margin: 15,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+            <View
               style={{
-                color: "blue",
-                fontSize: 15,
-                fontWeight: "bold",
-                position: "relative",
-                flexDirection: "row-reverse",
+                flexDirection: "column",
+                justifyContent: "center",
               }}
             >
-              Refer
-            </AppText>
+              <AppText style={{ color: "black", fontSize: 22 }}>
+                {firebase.default.auth().currentUser.displayName}
+              </AppText>
+              <AppText
+                style={{ color: "black", fontSize: 15, fontWeight: "bold" }}
+              >
+                {user.email}
+              </AppText>
+            </View>
+            <TouchableOpacity style={styles.refer}>
+              <AppText
+                style={{ color: "blue", fontSize: 20, fontWeight: "bold" }}
+              >
+                Refer
+              </AppText>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-    </View>
+    </StatusBarScreen>
   );
 }
 
@@ -122,5 +133,16 @@ const styles = StyleSheet.create({
   },
   sunMoon: {
     marginLeft: 270,
+  },
+  refer: {
+    alignSelf: "flex-end",
+    flexDirection: "row-reverse",
+    position: "absolute",
+    justifyContent: "flex-end",
+    right: 0,
+    // margin: 20,
+    // marginBottom: 5,
+    padding: 8,
+    paddingHorizontal: 10,
   },
 });
