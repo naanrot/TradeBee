@@ -7,7 +7,7 @@ function MaterialCommunity({ onPress, name, size, color, selectionColor }) {
   return (
     <TouchableOpacity
       underlayColor="black"
-      onPress={alert("Currently This function is under Development")}
+      onPress={() => alert("Currently This function is under Development")}
     >
       <MaterialCommunityIcons
         name={name}

@@ -7,7 +7,7 @@ function MaterialIcon({ onPress, name, size, color, style }) {
   return (
     <TouchableOpacity
       underlayColor="black"
-      onPress={alert("Currently This function is under Development")}
+      onPress={() => alert("Currently This function is under Development")}
     >
       <MaterialIcons name={name} size={size} color={color} />
     </TouchableOpacity>
