@@ -27,17 +27,24 @@ function TradeScreen() {
   const { coinName, exchangerate, coinPrice, coinSymbol } = route.params;
   console.log(coinName);
 
+  const changeTrade = (value) => {
+    setPrice(priceInitialText);
+    setConvertedPrice("0");
+    setBuying(value);
+  };
+
   function NumPadRow({ text1, text2, text3 }) {
     let numPadStyle = StyleSheet.create({
       container: {
         flex: 1,
         flexDirection: "row",
+        borderRadius: 5,
+        elevation: 2,
         justifyContent: "space-evenly",
       },
 
       textContainerStyle: {
         flex: 1,
-        borderWidth: 1,
         justifyContent: "center",
       },
 
@@ -47,6 +54,14 @@ function TradeScreen() {
         fontWeight: "300",
       },
     });
+
+    const converter = (value) => {
+      if (isBuying) {
+        return parseFloat(value) / coinPrice;
+      } else {
+        return coinPrice / parseFloat(value);
+      }
+    };
 
     const onPress = (val) => {
       let tempPrice = price;
@@ -65,14 +80,14 @@ function TradeScreen() {
       }
 
       if (val !== "ESC") {
-        let cPrice = parseInt(tempPrice + val) / coinPrice;
+        let cPrice = converter(tempPrice + val);
         setConvertedPrice(cPrice.toString());
       } else {
         if (tempPrice.length === 0) {
           setPrice(priceInitialText);
           tempPrice = "0";
         }
-        let cPrice = parseInt(tempPrice) / coinPrice;
+        let cPrice = converter(tempPrice);
         setConvertedPrice(cPrice.toString());
       }
     };
@@ -108,22 +123,20 @@ function TradeScreen() {
           <View
             style={{ flex: 1, flexDirection: "row", alignItems: "baseline" }}
           >
-            <Text style={{ fontSize: 13, margin: 10 }}>{exchangerate}</Text>
+            <Text style={{ fontSize: 13, margin: 10 }}>
+              {isBuying ? exchangerate : coinSymbol.toUpperCase()}
+            </Text>
             <Text style={styles.initialTextInput}>{price}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "baseline" }}>
             <Text style={{ fontSize: 13, margin: 10 }}>
-              {coinSymbol.toUpperCase()}
+              {!isBuying ? exchangerate : coinSymbol.toUpperCase()}
             </Text>
             <Text style={styles.convertedTextContainer}>{convertedPrice}</Text>
           </View>
         </View>
         <View style={styles.buySellContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              setBuying(true);
-            }}
-          >
+          <TouchableOpacity onPress={() => changeTrade(true)}>
             <ActiveButton isActive={!isBuying} title="BUY" />
           </TouchableOpacity>
           <View
@@ -135,11 +148,7 @@ function TradeScreen() {
             <AntDesign style={styles.activeArrow} size={20} name="arrowup" />
             <AntDesign style={{ color: "black" }} size={20} name="arrowdown" />
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              setBuying(false);
-            }}
-          >
+          <TouchableOpacity onPress={() => changeTrade(false)}>
             <ActiveButton isActive={isBuying} title="SELL" />
           </TouchableOpacity>
         </View>
@@ -149,7 +158,12 @@ function TradeScreen() {
         <NumPadRow text1="4" text2="5" text3="6" />
         <NumPadRow text1="7" text2="8" text3="9" />
         <NumPadRow text1="." text2="0" text3="ESC" />
-        <AppButton title="Pay" />
+        <AppButton
+          onPress={() => {
+            alert("Please deposit amount in wallet");
+          }}
+          title="Pay"
+        />
       </View>
     </View>
   );

@@ -18,7 +18,7 @@ const cardStyle = StyleSheet.create({
     margin: 8,
     padding: 10,
     elevation: 3,
-    overflow: "scroll",
+    overflow: "hidden",
   },
 });
 

@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import StatusBarScreen from "./app/components/StatusBarScreen";
 import MainNavigation from "./app/Navigation/MainNavigation";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "./app/screens/LoginScreen";
-import RegisterScreen from "./app/screens/RegisterScreen";
 import firebase from "firebase/app";
-import MarketScreen from "./app/screens/MarketScreen";
-import GraphScreen from "./app/screens/GraphScreen";
 import UserAuth from "./app/Navigation/UserAuth";
+import AuthContext from "./app/auth/context";
 
 const firebaseConfig = {
+  apiKey: "AIzaSyBKWrPDY91TETHzJ-XdEaTV2DZ0EpeBJCg",
   authDomain: "tradebee-46f89.firebaseapp.com",
   projectId: "tradebee-46f89",
   storageBucket: "tradebee-46f89.appspot.com",
